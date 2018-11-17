@@ -1,4 +1,4 @@
-﻿let nowId = 0;
+let nowId = 0;
 let checkedAll = document.querySelector("#checked-all");
 //点击全选按钮
 checkedAll.onclick = function () {
@@ -197,7 +197,7 @@ function renderChild(arr) {
                 <li class="folder-item ${e.checked ? "active" : ""}" data-id="${
       e.id
     }">
-                    <img src="./img/folder-b.png" alt="">
+                    <img src="../img/folder-b.png" alt="">
                     <span class="folder-name">${e.title}</span>
                     <input type="text" class="editor" value="${e.title}">
                     <label class="checked">
@@ -283,7 +283,6 @@ folders.addEventListener("click", function (ev) {
 //双击重命名
 // folders.addEventListener("dblclick", function (e) {
 //     if (e.target.className == "folder-name") {
-//         console.log(1);
 //         let folderName = e.target;
 //         let editor = e.target.nextElementSibling;
 //         folderName.style.display = "none";
@@ -315,8 +314,8 @@ folders.addEventListener("contextmenu", function (e) {
         contextmenu.style.top = e.clientY + "px";
         contextmenu.style.display = "block";
     }
-    let folderName = e.target.querySelector(".folder-name");
-    let editor = e.target.querySelector(".editor");
+    let folderName = item.querySelector(".folder-name");
+    let editor = item.querySelector(".editor");
     let btns = rightmenu.querySelectorAll("li");
     //右键重命名
     btns[2].onclick = function () {
@@ -568,7 +567,7 @@ function yidong() {
                         fail++;
                         return;
                     }
-                   
+
                     parents(id).forEach(e1 => {
                         if (e1.pid == e.id) {
                             // msg('目标文件夹是当前要移动的文件夹的子文件夹',1);
@@ -577,10 +576,10 @@ function yidong() {
                         }
                     });
                     for (let i = 0; i < eveTitle.length; i++) {
-                        if(eveTitle[i].title==e.title){
+                        if (eveTitle[i].title == e.title) {
                             // 要移动到的文件夹下有与当前正在移动的此项重名，不允许移动
                             fail++;
-                            return; 
+                            return;
                         }
                     }
                     e.pid = id;
@@ -607,10 +606,11 @@ folders.addEventListener("mousedown", function (e) {
     if (e.button !== 0) {
         return false;
     }
-    if($(el).parents('li').length>0||el.tagName=="LI"){
-        return false;
+    if ($(el).parents('li').length > 0 || el.tagName == "LI") {
+        // return false;
+        console.log(1);
     }
-    
+
     sel = document.createElement("div");
     sel.className = "sel";
     document.body.appendChild(sel);
@@ -641,8 +641,8 @@ function move(e) {
     if (!isdown) {
         return false;
     }
-    data.forEach((e)=>{
-        if(e.checked){
+    data.forEach((e) => {
+        if (e.checked) {
             e.checked = false;
         }
     });
@@ -672,14 +672,14 @@ function move(e) {
                 if (e.id == id) {
                     e.checked = true;
                 }
-            }); 
+            });
         }
-    //全选
-    let liLength = folders.querySelectorAll("li.active");
-    let Lis = folders.querySelectorAll("li");
-    if (liLength.length == Lis.length) {
-        checkedAll.checked = true;
-    }
+        //全选
+        let liLength = folders.querySelectorAll("li.active");
+        let Lis = folders.querySelectorAll("li");
+        if (liLength.length == Lis.length) {
+            checkedAll.checked = true;
+        }
     })
     isdown = true;
     e.cancelBubble = true;
