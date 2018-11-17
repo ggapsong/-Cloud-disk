@@ -1,4 +1,4 @@
-let nowId = 0;
+﻿let nowId = 0;
 let checkedAll = document.querySelector("#checked-all");
 //点击全选按钮
 checkedAll.onclick = function () {
@@ -301,6 +301,7 @@ let target_El;
 let rightmenu = document.querySelector("#contextmenu");
 folders.addEventListener("contextmenu", function (e) {
     let item;
+    if(e.target.classList.contains('editor')) return false;
     if (e.target.classList.contains("folder-item")) {
         item = e.target;
     } else if (e.target.classList.contains("folder-name") || e.target.tagName == "IMG") {
