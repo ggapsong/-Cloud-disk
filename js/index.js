@@ -1,4 +1,4 @@
-﻿let nowId = 0;
+let nowId = 0;
 let checkedAll = document.querySelector("#checked-all");
 //点击全选按钮
 checkedAll.onclick = function () {
@@ -63,6 +63,19 @@ function parents(id) {
 //删子集
 function delChild(id) {
     for (let i = 0; i < data.length; i++) {
+        const e = data[i];
+        if (e.pid == id) {
+            data.splice(i, 1);
+            i--;
+            for (let i2 = 0; i2 < data.length; i2++) {
+                const e2 = data[i2];
+                if (e2.pid == e.id) {
+                    delChild(e.id);
+                    break;
+                }
+            }
+        }
+    }for (let i = 0; i < data.length; i++) {
         const e = data[i];
         if (e.pid == id) {
             data.splice(i, 1);
@@ -281,21 +294,66 @@ folders.addEventListener("click", function (ev) {
     ev.stopPropagation()
 });
 //双击重命名
-// folders.addEventListener("dblclick", function (e) {
-//     if (e.target.className == "folder-name") {
-//         let folderName = e.target;
-//         let editor = e.target.nextElementSibling;
-//         folderName.style.display = "none";
-//         editor.style.display = "block";
-//         editor.select();
-//         editor.onblur = function(){
-//             folderName.style.display = "block";
-//             editor.style.display = "none";
-//             folderName.innerHTML = editor.value;
-//             msg("成功",0)
-//         }
-//     }
-// })
+
+folders.addEventListener("dblclick", function (e) {
+    if (e.target.className == "folder-name") {
+        let folderName = e.target;
+        let editor = e.target.nextElementSibling;
+        let id = editor.parentNode.dataset.id;
+        let s = self(id);
+        let nows = child(s.pid);
+        folderName.style.display = "none";
+        editor.style.display = "block";
+        editor.select();
+        let inner = folderName.innerHTML;
+        editor.onkeypress = function (ev) {
+            if (ev.keyCode == 13) {
+                changeName();
+                renderMenuBF(nowId);
+                initOpenFile();
+            }
+        };
+        editor.onblur = function () {
+            changeName();
+            renderMenuBF(nowId);
+            initOpenFile();
+        };
+
+        function changeName() {
+            if (editor.value == "") {
+                msg("请输入正确的文件夹名", 1);
+            } else {
+                if (inner == editor.value) {
+                    folderName.style.display = "block";
+                    editor.style.display = "none";
+                    msg("文件名修改成功", 0);
+                } else {
+                    var can = true;
+                    for (let i = 0; i < nows.length; i++) {
+                        if (id != nows[i].id && editor.value == nows[i].title) {
+                            can = false;
+                        }
+                    }
+                    if (can) {
+                        folderName.style.display = "block";
+                        folderName.innerHTML = editor.value;
+                        editor.style.display = "none";
+                        for (let i = 0; i < data.length; i++) {
+                            if (data[i].id == id) {
+                                data[i].title = editor.value;
+                                break;
+                            }
+                        }
+                        msg("文件名修改成功", 0);
+                    } else {
+                        msg("重名了", 1);
+                        editor.focus();
+                    }
+                }
+            }
+        }
+    }
+})
 //右键菜单
 let target_El;
 let rightmenu = document.querySelector("#contextmenu");
@@ -608,8 +666,7 @@ folders.addEventListener("mousedown", function (e) {
         return false;
     }
     if ($(el).parents('li').length > 0 || el.tagName == "LI") {
-        // return false;
-        console.log(1);
+        return false;
     }
 
     sel = document.createElement("div");
@@ -702,7 +759,3 @@ function isBoon(el, el2) {
     }
     return true;
 }
-//框选
-/*
-选中之后再选上一次的checked就应该取消；
-*/
